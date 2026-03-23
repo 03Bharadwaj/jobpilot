@@ -1,175 +1,306 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JobPilot</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #f5f4f0; --surface: #ffffff; --surface2: #f0ede8;
-    --border: rgba(0,0,0,0.1); --border2: rgba(0,0,0,0.18);
-    --text: #1a1a18; --text2: #5a5a56; --text3: #9a9a94;
-    --accent: #2d5be3; --accent-bg: #eef2fd;
-    --success: #1a7a4a; --success-bg: #e6f5ed;
-    --warn: #a05a10; --warn-bg: #fef3e2;
-    --danger: #b82020; --danger-bg: #fdeaea;
-    --purple: #5e3fbe; --purple-bg: #f0ecfd;
-    --teal: #0f6e56; --teal-bg: #e1f5ee;
-    --ff: 'DM Sans', sans-serif; --fm: 'DM Mono', monospace;
-    --radius: 10px; --radius-lg: 16px;
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap');
+
+  :root[data-theme="dark"] {
+    --bg:       #2c2e31;
+    --bg2:      #35373b;
+    --bg3:      #3e4044;
+    --surface:  #3a3c40;
+    --surface2: #434649;
+    --border:   rgba(255,255,255,0.07);
+    --border2:  rgba(255,255,255,0.13);
+    --text:     #e2e2e0;
+    --text2:    #9a9b97;
+    --text3:    #636460;
+    --accent:   #d4a017;
+    --accent-dim: rgba(212,160,23,0.12);
+    --accent-text: #1a1a18;
+    --success:  #4a9e6e;
+    --success-bg: rgba(74,158,110,0.12);
+    --warn:     #c97b2a;
+    --warn-bg:  rgba(201,123,42,0.12);
+    --danger:   #c05050;
+    --danger-bg: rgba(192,80,80,0.12);
+    --purple:   #8b72d4;
+    --purple-bg: rgba(139,114,212,0.12);
+    --teal:     #4aabaa;
+    --teal-bg:  rgba(74,171,170,0.12);
+    --qg-bg:    #1e2022;
+    --qg-text:  #e2e2e0;
+    --qg-sub:   #636460;
+    --qg-val:   #9a9b97;
+    --shadow:   0 2px 12px rgba(0,0,0,0.35);
   }
-  body { font-family: var(--ff); background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; }
-  .screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
-  .center-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 2.5rem 2rem; max-width: 400px; width: 100%; text-align: center; }
-  .logo-icon { width: 48px; height: 48px; background: var(--accent); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; }
-  .logo-icon svg { width: 24px; height: 24px; fill: white; }
-  .screen-title { font-size: 22px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 6px; }
-  .screen-sub { font-size: 13px; color: var(--text2); margin-bottom: 2rem; line-height: 1.6; }
-  .btn-google { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 11px 16px; background: var(--surface); border: 0.5px solid var(--border2); border-radius: 9px; font-family: var(--ff); font-size: 14px; font-weight: 500; color: var(--text); cursor: pointer; transition: background 0.15s; }
-  .btn-google:hover { background: var(--surface2); }
-  .btn-google svg { width: 18px; height: 18px; flex-shrink: 0; }
-  .screen-note { font-size: 11px; color: var(--text3); margin-top: 1rem; line-height: 1.5; }
-  .denied-icon { width: 48px; height: 48px; background: var(--danger-bg); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; }
-  .denied-icon svg { width: 22px; height: 22px; stroke: var(--danger); fill: none; }
-  .btn-secondary { display: inline-block; margin-top: 1rem; padding: 8px 18px; border: 0.5px solid var(--border2); border-radius: 8px; background: transparent; font-family: var(--ff); font-size: 13px; color: var(--text2); cursor: pointer; }
-  .btn-secondary:hover { background: var(--surface2); }
-  .nav { background: var(--surface); border-bottom: 0.5px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; gap: 1rem; height: 52px; position: sticky; top: 0; z-index: 100; }
-  .nav-logo { font-weight: 600; font-size: 15px; letter-spacing: -0.3px; display: flex; align-items: center; gap: 8px; }
-  .nav-logo-icon { width: 22px; height: 22px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
-  .nav-logo-icon svg { width: 12px; height: 12px; fill: white; }
-  .nav-tabs { display: flex; gap: 2px; }
-  .nav-tab { padding: 6px 14px; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; background: transparent; color: var(--text2); transition: all 0.15s; font-family: var(--ff); }
-  .nav-tab:hover { background: var(--surface2); color: var(--text); }
-  .nav-tab.active { background: var(--accent-bg); color: var(--accent); }
-  .nav-tab.admin-tab { color: var(--warn); }
-  .nav-tab.admin-tab:hover { background: var(--warn-bg); }
-  .nav-tab.admin-tab.active { background: var(--warn-bg); color: var(--warn); }
-  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-  .btn-add { padding: 7px 14px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--ff); display: flex; align-items: center; gap: 6px; transition: opacity 0.15s; }
-  .btn-add:hover { opacity: 0.88; }
-  .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--accent-bg); color: var(--accent); font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; border: 0.5px solid var(--border2); overflow: hidden; flex-shrink: 0; }
-  .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .signout-btn { padding: 5px 10px; border: 0.5px solid var(--border2); border-radius: 6px; background: transparent; font-size: 12px; color: var(--text2); cursor: pointer; font-family: var(--ff); }
-  .signout-btn:hover { background: var(--surface2); }
-  .main { padding: 1.5rem; max-width: 1100px; margin: 0 auto; width: 100%; }
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
-  .stat-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem 1.1rem; }
-  .stat-label { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-  .stat-val { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; }
-  .stat-val.blue { color: var(--accent); } .stat-val.green { color: var(--success); } .stat-val.warn { color: var(--warn); } .stat-val.red { color: var(--danger); }
-  .pipeline-section { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem; }
-  .section-title { font-size: 11px; font-weight: 600; color: var(--text3); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
-  .pipeline-bars { display: flex; flex-direction: column; gap: 8px; }
-  .pipeline-row { display: flex; align-items: center; gap: 10px; }
-  .pipeline-row-label { font-size: 12px; color: var(--text2); width: 130px; flex-shrink: 0; }
-  .pipeline-bar-bg { flex: 1; background: var(--surface2); border-radius: 4px; height: 8px; overflow: hidden; }
-  .pipeline-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
-  .pipeline-count { font-size: 12px; font-weight: 500; color: var(--text2); min-width: 20px; text-align: right; }
-  .followup-section { background: var(--warn-bg); border: 0.5px solid #f0c070; border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem; }
-  .followup-title { font-size: 13px; font-weight: 600; color: var(--warn); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-  .followup-item { background: var(--surface); border: 0.5px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; }
-  .followup-item:last-child { margin-bottom: 0; }
-  .followup-company { font-weight: 500; font-size: 13px; }
-  .followup-role { font-size: 12px; color: var(--text2); }
-  .followup-days { font-size: 12px; font-weight: 600; color: var(--warn); white-space: nowrap; }
-  .filters { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
-  .filter-select { padding: 6px 10px; border: 0.5px solid var(--border2); border-radius: 7px; font-size: 12px; font-family: var(--ff); background: var(--surface); color: var(--text); cursor: pointer; }
-  .search-input { padding: 6px 12px; border: 0.5px solid var(--border2); border-radius: 7px; font-size: 12px; font-family: var(--ff); background: var(--surface); color: var(--text); outline: none; width: 200px; }
-  .search-input:focus { border-color: var(--accent); }
-  .export-btn { padding: 6px 12px; border: 0.5px solid var(--border2); border-radius: 7px; font-size: 12px; font-family: var(--ff); background: var(--surface); color: var(--text2); cursor: pointer; margin-left: auto; }
-  .export-btn:hover { background: var(--surface2); }
-  .apps-list { display: flex; flex-direction: column; gap: 8px; }
-  .app-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; cursor: pointer; transition: border-color 0.15s; }
-  .app-card:hover { border-color: var(--border2); }
-  .app-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-  .app-card-left { flex: 1; min-width: 0; }
-  .app-company { font-weight: 600; font-size: 14px; }
-  .app-role { font-size: 13px; color: var(--text2); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .app-meta { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
-  .tag { font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 5px; white-space: nowrap; }
-  .tag-channel { background: var(--purple-bg); color: var(--purple); }
-  .tag-date { background: var(--surface2); color: var(--text2); font-family: var(--fm); font-size: 10px; }
-  .tag-overdue { background: var(--warn-bg); color: var(--warn); }
-  .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
-  .app-card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
-  .s-applied{background:#e6f1fb;color:#185fa5} .s-referral{background:var(--purple-bg);color:var(--purple)} .s-acknowledged{background:var(--teal-bg);color:var(--teal)} .s-hr{background:#fff3e0;color:#a05a10} .s-assignment{background:#fce4ec;color:#b82060} .s-technical{background:#e8f5e9;color:#1b5e20} .s-final{background:#ede7f6;color:#4527a0} .s-offer{background:var(--success-bg);color:var(--success)} .s-rejected{background:var(--danger-bg);color:var(--danger)} .s-ghosted{background:var(--surface2);color:var(--text3)}
-  .dot-applied{background:#2d5be3} .dot-referral{background:#5e3fbe} .dot-acknowledged{background:#0f6e56} .dot-hr{background:#a05a10} .dot-assignment{background:#b82060} .dot-technical{background:#1b5e20} .dot-final{background:#4527a0} .dot-offer{background:#1a7a4a} .dot-rejected{background:#b82020} .dot-ghosted{background:#9a9a94}
-  .admin-panel { max-width: 620px; }
-  .admin-header { background: var(--warn-bg); border: 0.5px solid #f0c070; border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-  .admin-header-left h2 { font-size: 16px; font-weight: 600; color: var(--warn); }
-  .admin-header-left p { font-size: 12px; color: var(--text2); margin-top: 3px; }
-  .slot-badge { background: var(--surface); border: 0.5px solid #f0c070; border-radius: 8px; padding: 8px 14px; text-align: center; flex-shrink: 0; }
-  .slot-num { font-size: 22px; font-weight: 700; color: var(--warn); letter-spacing: -0.5px; }
-  .slot-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
-  .add-email-row { display: flex; gap: 8px; margin-bottom: 1rem; }
-  .add-email-input { flex: 1; padding: 9px 12px; border: 0.5px solid var(--border2); border-radius: 8px; font-size: 13px; font-family: var(--ff); color: var(--text); background: var(--surface); outline: none; }
-  .add-email-input:focus { border-color: var(--accent); }
-  .btn-add-email { padding: 9px 16px; background: var(--accent); color: white; border: none; border-radius: 8px; font-family: var(--ff); font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; }
-  .btn-add-email:hover { opacity: 0.88; }
-  .btn-add-email:disabled { opacity: 0.45; cursor: not-allowed; }
-  .allowed-list { display: flex; flex-direction: column; gap: 6px; }
-  .allowed-item { background: var(--surface); border: 0.5px solid var(--border); border-radius: 9px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-  .allowed-email { font-size: 13px; font-family: var(--fm); color: var(--text); }
-  .allowed-added { font-size: 11px; color: var(--text3); }
-  .btn-remove { padding: 4px 10px; background: var(--danger-bg); color: var(--danger); border: 0.5px solid #f0a0a0; border-radius: 6px; font-size: 11px; font-weight: 500; cursor: pointer; font-family: var(--ff); white-space: nowrap; }
-  .btn-remove:hover { opacity: 0.8; }
-  .admin-note { font-size: 12px; color: var(--text3); background: var(--surface2); border-radius: 8px; padding: 10px 12px; margin-top: 1rem; line-height: 1.6; }
-  .limit-warning { background: var(--danger-bg); border: 0.5px solid #f0a0a0; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: var(--danger); margin-bottom: 1rem; }
-  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 200; display: flex; align-items: flex-start; justify-content: center; padding: 2rem 1rem; overflow-y: auto; }
-  .modal { background: var(--surface); border-radius: var(--radius-lg); width: 100%; max-width: 620px; padding: 1.75rem; position: relative; margin: auto; }
-  .modal-title { font-size: 17px; font-weight: 600; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; }
-  .modal-close { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 20px; padding: 0; line-height: 1; }
-  .modal-close:hover { color: var(--text); }
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .form-group { display: flex; flex-direction: column; gap: 5px; }
-  .form-group.full { grid-column: 1 / -1; }
-  .form-label { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.4px; }
-  .form-input { padding: 8px 10px; border: 0.5px solid var(--border2); border-radius: 7px; font-size: 13px; font-family: var(--ff); color: var(--text); background: var(--surface); outline: none; }
-  .form-input:focus { border-color: var(--accent); }
-  .form-textarea { padding: 8px 10px; border: 0.5px solid var(--border2); border-radius: 7px; font-size: 13px; font-family: var(--ff); color: var(--text); background: var(--surface); outline: none; resize: vertical; min-height: 80px; }
-  .form-textarea:focus { border-color: var(--accent); }
-  select.form-input { cursor: pointer; }
-  .modal-actions { display: flex; gap: 8px; margin-top: 1.25rem; justify-content: flex-end; }
-  .btn-cancel { padding: 8px 16px; border: 0.5px solid var(--border2); border-radius: 8px; background: var(--surface); color: var(--text2); font-family: var(--ff); font-size: 13px; cursor: pointer; }
-  .btn-save { padding: 8px 16px; background: var(--accent); color: white; border: none; border-radius: 8px; font-family: var(--ff); font-size: 13px; font-weight: 500; cursor: pointer; }
-  .btn-danger { padding: 8px 16px; background: var(--danger-bg); color: var(--danger); border: 0.5px solid #f0a0a0; border-radius: 8px; font-family: var(--ff); font-size: 13px; cursor: pointer; margin-right: auto; }
-  .detail-section { margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 0.5px solid var(--border); }
-  .detail-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-  .quick-glance { background: #1a1a2e; border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
-  .qg-label { font-size: 10px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-  .qg-company { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
-  .qg-role { font-size: 13px; color: #a0a0c0; margin-top: 3px; }
-  .qg-meta { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
-  .qg-item { display: flex; flex-direction: column; gap: 2px; }
-  .qg-item-label { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
-  .qg-item-val { font-size: 12px; color: #ccc; font-weight: 500; }
-  .note-entry { background: var(--surface2); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; }
-  .note-entry-date { font-size: 10px; color: var(--text3); font-family: var(--fm); margin-bottom: 4px; }
-  .note-entry-text { font-size: 13px; color: var(--text); }
-  .add-note-area { display: flex; gap: 8px; margin-top: 8px; }
-  .add-note-input { flex: 1; padding: 8px 10px; border: 0.5px solid var(--border2); border-radius: 7px; font-size: 13px; font-family: var(--ff); color: var(--text); background: var(--surface); outline: none; }
-  .add-note-btn { padding: 8px 12px; background: var(--accent); color: white; border: none; border-radius: 7px; font-size: 12px; cursor: pointer; font-family: var(--ff); white-space: nowrap; }
-  .timeline { display: flex; flex-direction: column; }
-  .tl-item { display: flex; gap: 10px; align-items: flex-start; padding-bottom: 12px; position: relative; }
-  .tl-item::before { content: ''; position: absolute; left: 7px; top: 18px; bottom: 0; width: 1px; background: var(--border2); }
-  .tl-item:last-child::before { display: none; }
-  .tl-dot { width: 15px; height: 15px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 1px; border: 2px solid var(--surface); }
-  .tl-content { flex: 1; }
-  .tl-stage { font-size: 13px; font-weight: 500; }
-  .tl-date { font-size: 11px; color: var(--text3); font-family: var(--fm); }
-  .loading-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; }
-  .spinner { width: 28px; height: 28px; border: 2.5px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-text { font-size: 13px; color: var(--text2); }
-  .hidden { display: none !important; }
-  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text3); }
-  .empty-state h3 { font-size: 16px; color: var(--text2); margin-bottom: 8px; }
-  @media (max-width: 600px) {
-    .nav { padding: 0 1rem; gap: 6px; } .nav-tab { padding: 5px 8px; font-size: 12px; } .btn-add span { display: none; }
-    .main { padding: 1rem; } .form-grid { grid-template-columns: 1fr; } .form-group.full { grid-column: 1; }
-    .stats-grid { grid-template-columns: repeat(3, 1fr); }
+  :root[data-theme="light"] {
+    --bg:       #faf8f3;
+    --bg2:      #f3f0e8;
+    --bg3:      #ebe7dc;
+    --surface:  #ffffff;
+    --surface2: #f5f2ea;
+    --border:   rgba(0,0,0,0.08);
+    --border2:  rgba(0,0,0,0.14);
+    --text:     #1e1d1a;
+    --text2:    #6b6860;
+    --text3:    #a8a49a;
+    --accent:   #b8860b;
+    --accent-dim: rgba(184,134,11,0.1);
+    --accent-text: #ffffff;
+    --success:  #2e7d52;
+    --success-bg: rgba(46,125,82,0.09);
+    --warn:     #9a5e10;
+    --warn-bg:  rgba(154,94,16,0.09);
+    --danger:   #9e3535;
+    --danger-bg: rgba(158,53,53,0.09);
+    --purple:   #6b52c0;
+    --purple-bg: rgba(107,82,192,0.09);
+    --teal:     #2a8a89;
+    --teal-bg:  rgba(42,138,137,0.09);
+    --qg-bg:    #1e2022;
+    --qg-text:  #e2e2e0;
+    --qg-sub:   #636460;
+    --qg-val:   #9a9b97;
+    --shadow:   0 2px 12px rgba(0,0,0,0.08);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    min-height: 100vh;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  /* ── LOADING ── */
+  .loading-screen { min-height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:16px; }
+  .spinner { width:28px; height:28px; border:2px solid var(--border2); border-top-color:var(--accent); border-radius:50%; animation:spin 0.7s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .loading-text { font-size:13px; color:var(--text3); letter-spacing:0.5px; }
+
+  /* ── AUTH / SETUP SCREENS ── */
+  .full-screen { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2rem; }
+  .center-card { background:var(--surface); border:0.5px solid var(--border2); border-radius:16px; padding:2.5rem 2rem; max-width:380px; width:100%; text-align:center; box-shadow:var(--shadow); }
+  .logo-mark { width:44px; height:44px; background:var(--accent); border-radius:11px; display:flex; align-items:center; justify-content:center; margin:0 auto 1.25rem; }
+  .logo-mark svg { width:22px; height:22px; fill:var(--accent-text); }
+  .card-title { font-size:20px; font-weight:600; letter-spacing:-0.4px; margin-bottom:6px; }
+  .card-sub { font-size:13px; color:var(--text2); margin-bottom:2rem; line-height:1.6; }
+  .btn-google { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:11px 16px; background:var(--bg2); border:0.5px solid var(--border2); border-radius:9px; font-family:inherit; font-size:14px; font-weight:500; color:var(--text); cursor:pointer; transition:background 0.15s; }
+  .btn-google:hover { background:var(--bg3); }
+  .btn-google svg { width:18px; height:18px; flex-shrink:0; }
+  .card-note { font-size:11px; color:var(--text3); margin-top:1rem; line-height:1.6; }
+  .denied-icon { width:44px; height:44px; background:var(--danger-bg); border-radius:11px; display:flex; align-items:center; justify-content:center; margin:0 auto 1.25rem; }
+  .denied-icon svg { width:20px; height:20px; stroke:var(--danger); fill:none; stroke-width:2; }
+  .btn-ghost { display:inline-block; margin-top:1rem; padding:8px 18px; border:0.5px solid var(--border2); border-radius:8px; background:transparent; font-family:inherit; font-size:13px; color:var(--text2); cursor:pointer; transition:background 0.15s; }
+  .btn-ghost:hover { background:var(--bg2); }
+
+  /* ── USERNAME SETUP ── */
+  .username-input { width:100%; padding:11px 14px; background:var(--bg2); border:0.5px solid var(--border2); border-radius:9px; font-family:inherit; font-size:15px; color:var(--text); outline:none; text-align:center; letter-spacing:0.2px; margin-bottom:12px; transition:border-color 0.15s; }
+  .username-input:focus { border-color:var(--accent); }
+  .btn-primary { width:100%; padding:11px 16px; background:var(--accent); border:none; border-radius:9px; font-family:inherit; font-size:14px; font-weight:600; color:var(--accent-text); cursor:pointer; transition:opacity 0.15s; letter-spacing:0.2px; }
+  .btn-primary:hover { opacity:0.88; }
+
+  /* ── NAV ── */
+  .nav { background:var(--bg2); border-bottom:0.5px solid var(--border); padding:0 1.5rem; display:flex; align-items:center; gap:4px; height:50px; position:sticky; top:0; z-index:100; }
+  .nav-logo { font-size:15px; font-weight:600; letter-spacing:-0.3px; color:var(--text); display:flex; align-items:center; gap:8px; margin-right:8px; }
+  .nav-logo-dot { width:8px; height:8px; background:var(--accent); border-radius:50%; }
+  .nav-tab { padding:5px 12px; border-radius:7px; font-size:13px; font-weight:400; cursor:pointer; border:none; background:transparent; color:var(--text2); transition:all 0.15s; font-family:inherit; letter-spacing:0.1px; }
+  .nav-tab:hover { color:var(--text); background:var(--bg3); }
+  .nav-tab.active { color:var(--accent); background:var(--accent-dim); font-weight:500; }
+  .nav-tab.admin-tab { color:var(--warn); }
+  .nav-tab.admin-tab:hover { background:var(--warn-bg); }
+  .nav-tab.admin-tab.active { background:var(--warn-bg); color:var(--warn); }
+  .nav-right { margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .btn-add { padding:6px 14px; background:var(--accent); color:var(--accent-text); border:none; border-radius:7px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; display:flex; align-items:center; gap:6px; transition:opacity 0.15s; letter-spacing:0.1px; }
+  .btn-add:hover { opacity:0.85; }
+  .theme-toggle { width:32px; height:32px; border:0.5px solid var(--border2); border-radius:7px; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text2); transition:background 0.15s; }
+  .theme-toggle:hover { background:var(--bg3); color:var(--text); }
+  .theme-toggle svg { width:15px; height:15px; }
+  .nav-username { font-size:12px; color:var(--text3); font-weight:400; }
+  .user-avatar { width:28px; height:28px; border-radius:50%; background:var(--accent-dim); color:var(--accent); font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; border:0.5px solid var(--border2); overflow:hidden; flex-shrink:0; }
+  .user-avatar img { width:100%; height:100%; object-fit:cover; }
+  .signout-btn { padding:4px 10px; border:0.5px solid var(--border2); border-radius:6px; background:transparent; font-size:12px; color:var(--text3); cursor:pointer; font-family:inherit; transition:background 0.15s; }
+  .signout-btn:hover { background:var(--bg3); color:var(--text2); }
+
+  /* ── MAIN ── */
+  .main { padding:1.75rem 1.5rem; max-width:1080px; margin:0 auto; width:100%; }
+
+  /* ── GREETING ── */
+  .greeting-block { margin-bottom:1.75rem; }
+  .greeting-moment { font-size:11px; color:var(--accent); font-weight:500; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:4px; font-family:'DM Mono', monospace; }
+  .greeting-name { font-size:26px; font-weight:600; letter-spacing:-0.6px; color:var(--text); }
+  .greeting-sub { font-size:13px; color:var(--text3); margin-top:4px; }
+
+  /* ── STATS ── */
+  .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:8px; margin-bottom:1.25rem; }
+  .stat-card { background:var(--surface); border:0.5px solid var(--border); border-radius:10px; padding:1rem; }
+  .stat-label { font-size:10px; font-weight:500; color:var(--text3); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px; font-family:'DM Mono', monospace; }
+  .stat-val { font-size:24px; font-weight:600; letter-spacing:-0.5px; color:var(--text); }
+  .stat-val.accent { color:var(--accent); }
+  .stat-val.green { color:var(--success); }
+  .stat-val.warn { color:var(--warn); }
+  .stat-val.red { color:var(--danger); }
+
+  /* ── PIPELINE ── */
+  .section-card { background:var(--surface); border:0.5px solid var(--border); border-radius:12px; padding:1.25rem; margin-bottom:1.25rem; }
+  .section-label { font-size:10px; font-weight:500; color:var(--text3); text-transform:uppercase; letter-spacing:1px; margin-bottom:1rem; font-family:'DM Mono', monospace; }
+  .pipeline-row { display:flex; align-items:center; gap:10px; margin-bottom:7px; }
+  .pipeline-row:last-child { margin-bottom:0; }
+  .pipeline-row-label { font-size:12px; color:var(--text2); width:130px; flex-shrink:0; }
+  .pipeline-bar-bg { flex:1; background:var(--bg3); border-radius:3px; height:6px; overflow:hidden; }
+  .pipeline-bar-fill { height:100%; border-radius:3px; transition:width 0.6s cubic-bezier(0.4,0,0.2,1); }
+  .pipeline-count { font-size:11px; font-weight:500; color:var(--text3); min-width:18px; text-align:right; font-family:'DM Mono', monospace; }
+
+  /* ── FOLLOWUP ── */
+  .followup-banner { background:var(--warn-bg); border:0.5px solid rgba(201,123,42,0.25); border-radius:12px; padding:1.25rem; margin-bottom:1.25rem; }
+  .followup-label { font-size:10px; font-weight:500; color:var(--warn); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; font-family:'DM Mono', monospace; display:flex; align-items:center; gap:6px; }
+  .followup-item { background:var(--surface); border:0.5px solid var(--border); border-radius:8px; padding:9px 12px; margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; transition:border-color 0.15s; }
+  .followup-item:hover { border-color:var(--border2); }
+  .followup-item:last-child { margin-bottom:0; }
+  .followup-company { font-weight:500; font-size:13px; }
+  .followup-role { font-size:12px; color:var(--text2); margin-top:1px; }
+  .followup-days { font-size:11px; font-weight:600; color:var(--warn); font-family:'DM Mono', monospace; white-space:nowrap; }
+
+  /* ── FILTERS ── */
+  .filters { display:flex; gap:8px; margin-bottom:1rem; flex-wrap:wrap; align-items:center; }
+  .filter-select { padding:6px 10px; border:0.5px solid var(--border2); border-radius:7px; font-size:12px; font-family:inherit; background:var(--surface); color:var(--text); cursor:pointer; }
+  .search-box { padding:6px 12px; border:0.5px solid var(--border2); border-radius:7px; font-size:12px; font-family:inherit; background:var(--surface); color:var(--text); outline:none; width:190px; transition:border-color 0.15s; }
+  .search-box:focus { border-color:var(--accent); }
+  .export-btn { padding:6px 12px; border:0.5px solid var(--border2); border-radius:7px; font-size:12px; font-family:inherit; background:var(--surface); color:var(--text2); cursor:pointer; margin-left:auto; transition:background 0.15s; }
+  .export-btn:hover { background:var(--bg3); }
+
+  /* ── APP CARDS ── */
+  .apps-list { display:flex; flex-direction:column; gap:6px; }
+  .app-card { background:var(--surface); border:0.5px solid var(--border); border-radius:12px; padding:1rem 1.25rem; cursor:pointer; transition:border-color 0.15s, background 0.15s; }
+  .app-card:hover { border-color:var(--border2); background:var(--bg2); }
+  .app-card-inner { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .app-card-left { flex:1; min-width:0; }
+  .app-company-row { display:flex; align-items:center; gap:8px; }
+  .status-pip { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .app-company { font-weight:600; font-size:14px; letter-spacing:-0.2px; }
+  .app-role { font-size:12px; color:var(--text2); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .app-tags { display:flex; align-items:center; gap:6px; margin-top:8px; flex-wrap:wrap; }
+  .tag { font-size:11px; font-weight:500; padding:2px 8px; border-radius:4px; white-space:nowrap; letter-spacing:0.1px; }
+  .tag-channel { background:var(--purple-bg); color:var(--purple); }
+  .tag-date { background:var(--bg3); color:var(--text3); font-family:'DM Mono', monospace; font-size:10px; }
+  .tag-overdue { background:var(--warn-bg); color:var(--warn); }
+  .app-card-right { display:flex; flex-direction:column; align-items:flex-end; gap:5px; flex-shrink:0; }
+  .card-meta-text { font-size:11px; color:var(--text3); text-align:right; max-width:130px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .card-resume-text { font-size:10px; color:var(--text3); font-family:'DM Mono', monospace; }
+
+  /* STAGE TAGS */
+  .s-applied{background:rgba(45,91,227,0.1);color:#6b8ef0}
+  .s-referral{background:var(--purple-bg);color:var(--purple)}
+  .s-acknowledged{background:var(--teal-bg);color:var(--teal)}
+  .s-hr{background:var(--warn-bg);color:var(--warn)}
+  .s-assignment{background:rgba(184,32,96,0.1);color:#d4609a}
+  .s-technical{background:rgba(27,94,32,0.15);color:#6aaa6e}
+  .s-final{background:rgba(69,39,160,0.12);color:#9b83e0}
+  .s-offer{background:var(--success-bg);color:var(--success)}
+  .s-rejected{background:var(--danger-bg);color:var(--danger)}
+  .s-ghosted{background:rgba(100,100,100,0.1);color:var(--text3)}
+  .pip-applied{background:#6b8ef0} .pip-referral{background:var(--purple)} .pip-acknowledged{background:var(--teal)}
+  .pip-hr{background:var(--warn)} .pip-assignment{background:#d4609a} .pip-technical{background:#6aaa6e}
+  .pip-final{background:#9b83e0} .pip-offer{background:var(--success)} .pip-rejected{background:var(--danger)}
+  .pip-ghosted{background:var(--text3)}
+
+  /* ── ADMIN ── */
+  .admin-wrap { max-width:600px; }
+  .admin-header { background:var(--warn-bg); border:0.5px solid rgba(201,123,42,0.25); border-radius:12px; padding:1.25rem; margin-bottom:1.25rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+  .admin-header h2 { font-size:15px; font-weight:600; color:var(--warn); }
+  .admin-header p { font-size:12px; color:var(--text2); margin-top:3px; }
+  .slot-pill { background:var(--surface); border:0.5px solid rgba(201,123,42,0.3); border-radius:8px; padding:8px 14px; text-align:center; flex-shrink:0; }
+  .slot-num { font-size:20px; font-weight:700; color:var(--warn); font-family:'DM Mono', monospace; }
+  .slot-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; }
+  .add-row { display:flex; gap:8px; margin-bottom:1rem; }
+  .email-input { flex:1; padding:9px 12px; border:0.5px solid var(--border2); border-radius:8px; font-size:13px; font-family:inherit; color:var(--text); background:var(--bg2); outline:none; transition:border-color 0.15s; }
+  .email-input:focus { border-color:var(--accent); }
+  .btn-grant { padding:9px 16px; background:var(--accent); color:var(--accent-text); border:none; border-radius:8px; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; transition:opacity 0.15s; }
+  .btn-grant:hover { opacity:0.85; }
+  .btn-grant:disabled { opacity:0.35; cursor:not-allowed; }
+  .access-list { display:flex; flex-direction:column; gap:6px; }
+  .access-item { background:var(--surface); border:0.5px solid var(--border); border-radius:9px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .access-email { font-size:13px; font-family:'DM Mono', monospace; color:var(--text); }
+  .access-date { font-size:11px; color:var(--text3); }
+  .btn-revoke { padding:4px 10px; background:var(--danger-bg); color:var(--danger); border:0.5px solid rgba(192,80,80,0.25); border-radius:6px; font-size:11px; font-weight:500; cursor:pointer; font-family:inherit; transition:opacity 0.15s; }
+  .btn-revoke:hover { opacity:0.8; }
+  .limit-warn { background:var(--danger-bg); border:0.5px solid rgba(192,80,80,0.2); border-radius:8px; padding:10px 12px; font-size:12px; color:var(--danger); margin-bottom:1rem; }
+  .admin-footnote { font-size:12px; color:var(--text3); background:var(--bg2); border-radius:8px; padding:10px 12px; margin-top:1rem; line-height:1.7; }
+
+  /* ── MODAL ── */
+  .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:200; display:flex; align-items:flex-start; justify-content:center; padding:2rem 1rem; overflow-y:auto; }
+  .modal { background:var(--surface); border:0.5px solid var(--border2); border-radius:16px; width:100%; max-width:600px; padding:1.75rem; margin:auto; box-shadow:var(--shadow); }
+  .modal-head { font-size:16px; font-weight:600; margin-bottom:1.25rem; display:flex; align-items:center; justify-content:space-between; letter-spacing:-0.3px; }
+  .modal-x { background:none; border:none; cursor:pointer; color:var(--text3); font-size:20px; padding:0; line-height:1; transition:color 0.15s; }
+  .modal-x:hover { color:var(--text); }
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:11px; }
+  .fg { display:flex; flex-direction:column; gap:5px; }
+  .fg.full { grid-column:1/-1; }
+  .form-label { font-size:10px; font-weight:500; color:var(--text3); text-transform:uppercase; letter-spacing:0.7px; font-family:'DM Mono', monospace; }
+  .form-input { padding:8px 10px; border:0.5px solid var(--border2); border-radius:7px; font-size:13px; font-family:inherit; color:var(--text); background:var(--bg2); outline:none; transition:border-color 0.15s; }
+  .form-input:focus { border-color:var(--accent); }
+  .form-textarea { padding:8px 10px; border:0.5px solid var(--border2); border-radius:7px; font-size:13px; font-family:inherit; color:var(--text); background:var(--bg2); outline:none; resize:vertical; min-height:80px; transition:border-color 0.15s; }
+  .form-textarea:focus { border-color:var(--accent); }
+  select.form-input { cursor:pointer; }
+  .modal-actions { display:flex; gap:8px; margin-top:1.25rem; justify-content:flex-end; }
+  .btn-cancel { padding:8px 16px; border:0.5px solid var(--border2); border-radius:8px; background:transparent; color:var(--text2); font-family:inherit; font-size:13px; cursor:pointer; transition:background 0.15s; }
+  .btn-cancel:hover { background:var(--bg2); }
+  .btn-save { padding:8px 18px; background:var(--accent); color:var(--accent-text); border:none; border-radius:8px; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; transition:opacity 0.15s; }
+  .btn-save:hover { opacity:0.85; }
+  .btn-del { padding:8px 14px; background:var(--danger-bg); color:var(--danger); border:0.5px solid rgba(192,80,80,0.25); border-radius:8px; font-family:inherit; font-size:13px; cursor:pointer; margin-right:auto; transition:opacity 0.15s; }
+  .btn-del:hover { opacity:0.8; }
+
+  /* ── DETAIL ── */
+  .det-section { margin-bottom:1.25rem; padding-bottom:1.25rem; border-bottom:0.5px solid var(--border); }
+  .det-section:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+  .det-label { font-size:10px; font-weight:500; color:var(--text3); text-transform:uppercase; letter-spacing:0.7px; margin-bottom:8px; font-family:'DM Mono', monospace; }
+
+  /* QUICK GLANCE — always dark */
+  .qg { background:var(--qg-bg); border-radius:10px; padding:1rem 1.25rem; margin-bottom:1.25rem; border:0.5px solid rgba(255,255,255,0.06); }
+  .qg-eyebrow { font-size:9px; font-weight:500; color:#d4a017; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:8px; font-family:'DM Mono', monospace; }
+  .qg-company { font-size:18px; font-weight:700; color:var(--qg-text); letter-spacing:-0.4px; }
+  .qg-role { font-size:12px; color:var(--qg-sub); margin-top:3px; }
+  .qg-grid { display:flex; gap:1.5rem; margin-top:12px; flex-wrap:wrap; }
+  .qg-item-label { font-size:9px; color:var(--qg-sub); text-transform:uppercase; letter-spacing:0.8px; font-family:'DM Mono', monospace; margin-bottom:2px; }
+  .qg-item-val { font-size:12px; color:var(--qg-val); font-weight:500; max-width:180px; }
+
+  .note-entry { background:var(--bg2); border-radius:7px; padding:9px 11px; margin-bottom:5px; }
+  .note-date { font-size:10px; color:var(--text3); font-family:'DM Mono', monospace; margin-bottom:3px; }
+  .note-text { font-size:13px; color:var(--text); line-height:1.5; }
+  .note-add-row { display:flex; gap:7px; margin-top:8px; }
+  .note-input { flex:1; padding:7px 10px; border:0.5px solid var(--border2); border-radius:7px; font-size:13px; font-family:inherit; color:var(--text); background:var(--bg2); outline:none; transition:border-color 0.15s; }
+  .note-input:focus { border-color:var(--accent); }
+  .note-add-btn { padding:7px 12px; background:var(--accent); color:var(--accent-text); border:none; border-radius:7px; font-size:12px; cursor:pointer; font-family:inherit; font-weight:600; white-space:nowrap; }
+
+  .tl { display:flex; flex-direction:column; }
+  .tl-item { display:flex; gap:10px; align-items:flex-start; padding-bottom:11px; position:relative; }
+  .tl-item::before { content:''; position:absolute; left:6px; top:16px; bottom:0; width:1px; background:var(--border2); }
+  .tl-item:last-child::before { display:none; }
+  .tl-dot { width:13px; height:13px; border-radius:50%; background:var(--accent); flex-shrink:0; margin-top:2px; border:2px solid var(--surface); }
+  .tl-stage { font-size:13px; font-weight:500; }
+  .tl-date { font-size:10px; color:var(--text3); font-family:'DM Mono', monospace; }
+
+  .hidden { display:none !important; }
+  .empty { text-align:center; padding:3rem 1rem; color:var(--text3); }
+  .empty p { font-size:13px; margin-top:6px; }
+
+  @media (max-width:640px) {
+    .nav { padding:0 1rem; gap:4px; }
+    .nav-tab { padding:4px 8px; font-size:12px; }
+    .btn-add span { display:none; }
+    .nav-username { display:none; }
+    .main { padding:1rem; }
+    .form-grid { grid-template-columns:1fr; }
+    .fg.full { grid-column:1; }
+    .stats-grid { grid-template-columns:repeat(3,1fr); }
+    .greeting-name { font-size:22px; }
   }
 </style>
 </head>
@@ -177,110 +308,121 @@
 
 <div class="loading-screen" id="loading-screen">
   <div class="spinner"></div>
-  <div class="loading-text">Loading JobPilot...</div>
+  <div class="loading-text">starting up</div>
 </div>
 
-<div class="screen hidden" id="auth-screen">
+<div class="full-screen hidden" id="auth-screen">
   <div class="center-card">
-    <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v4H4zM4 10h10v4H4zM4 16h12v4H4z"/></svg></div>
-    <div class="screen-title">JobPilot</div>
-    <div class="screen-sub">Your personal job application tracker.<br>Sign in to access your pipeline from any device.</div>
+    <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M4 4h16v4H4zM4 10h10v4H4zM4 16h12v4H4z"/></svg></div>
+    <div class="card-title">JobPilot</div>
+    <div class="card-sub">Your job search, organised.<br>Sign in to access your pipeline from any device.</div>
     <button class="btn-google" onclick="signInWithGoogle()">
       <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
       Continue with Google
     </button>
-    <div class="screen-note">Access is by invitation only. Contact Bharadwaj if you need access.</div>
+    <div class="card-note">Access is by invitation only.</div>
   </div>
 </div>
 
-<div class="screen hidden" id="denied-screen">
+<div class="full-screen hidden" id="denied-screen">
   <div class="center-card">
-    <div class="denied-icon"><svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg></div>
-    <div class="screen-title">Access not granted</div>
-    <div class="screen-sub">Your Google account hasn't been given access to JobPilot.<br><br>Contact Bharadwaj to request access.</div>
-    <button class="btn-secondary" onclick="signOut()">Sign out and try another account</button>
+    <div class="denied-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg></div>
+    <div class="card-title">Access not granted</div>
+    <div class="card-sub">Your Google account hasn't been given access yet.<br><br>Contact Bharadwaj to request access.</div>
+    <button class="btn-ghost" onclick="signOut()">Sign out and try another account</button>
+  </div>
+</div>
+
+<div class="full-screen hidden" id="setup-screen">
+  <div class="center-card">
+    <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M4 4h16v4H4zM4 10h10v4H4zM4 16h12v4H4z"/></svg></div>
+    <div class="card-title">What should we call you?</div>
+    <div class="card-sub">This is how JobPilot will greet you every time you open it.</div>
+    <input type="text" class="username-input" id="username-input" placeholder="your name" maxlength="30" onkeydown="if(event.key==='Enter')saveUsername()">
+    <button class="btn-primary" onclick="saveUsername()">Let's go</button>
   </div>
 </div>
 
 <div id="app-screen" class="hidden">
   <nav class="nav">
-    <div class="nav-logo">
-      <div class="nav-logo-icon"><svg viewBox="0 0 12 12" fill="white"><path d="M2 2h8v2H2zM2 5h5v2H2zM2 8h6v2H2z"/></svg></div>
-      JobPilot
-    </div>
+    <div class="nav-logo"><div class="nav-logo-dot"></div>JobPilot</div>
     <div class="nav-tabs">
-      <button class="nav-tab active" onclick="switchTab('dashboard')">Dashboard</button>
-      <button class="nav-tab" onclick="switchTab('applications')">Applications</button>
-      <button class="nav-tab admin-tab hidden" id="admin-nav-tab" onclick="switchTab('admin')">Admin</button>
+      <button class="nav-tab active" onclick="switchTab('dashboard')">dashboard</button>
+      <button class="nav-tab" onclick="switchTab('applications')">applications</button>
+      <button class="nav-tab admin-tab hidden" id="admin-nav-tab" onclick="switchTab('admin')">admin</button>
     </div>
     <div class="nav-right">
+      <span class="nav-username" id="nav-username"></span>
       <button class="btn-add" id="add-btn" onclick="openAddModal()">
-        <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1v10M1 6h10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-        <span>Add application</span>
+        <svg width="11" height="11" viewBox="0 0 12 12"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        <span>add</span>
+      </button>
+      <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Toggle theme">
+        <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hidden"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
       <div class="user-avatar" id="user-avatar"></div>
-      <button class="signout-btn" onclick="signOut()">Sign out</button>
+      <button class="signout-btn" onclick="signOut()">sign out</button>
     </div>
   </nav>
 
   <div class="main">
     <div id="tab-dashboard">
+      <div class="greeting-block">
+        <div class="greeting-moment" id="greeting-moment"></div>
+        <div class="greeting-name" id="greeting-name"></div>
+        <div class="greeting-sub" id="greeting-sub"></div>
+      </div>
       <div class="stats-grid" id="stats-grid"></div>
-      <div class="followup-section hidden" id="followup-section">
-        <div class="followup-title">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#a05a10" stroke-width="1.5"/><path d="M7 4v3.5l2 1.5" stroke="#a05a10" stroke-width="1.5" stroke-linecap="round"/></svg>
-          Follow-up needed
+      <div class="followup-banner hidden" id="followup-section">
+        <div class="followup-label">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M7 4v3.5l2 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          follow-up needed
         </div>
         <div id="followup-list"></div>
       </div>
-      <div class="pipeline-section">
-        <div class="section-title">Pipeline breakdown</div>
-        <div class="pipeline-bars" id="pipeline-bars"></div>
+      <div class="section-card">
+        <div class="section-label">pipeline</div>
+        <div id="pipeline-bars"></div>
       </div>
     </div>
 
     <div id="tab-applications" class="hidden">
       <div class="filters">
-        <input type="text" class="search-input" placeholder="Search company or role..." id="search-input" oninput="renderApps()">
+        <input type="text" class="search-box" placeholder="search company or role..." id="search-input" oninput="renderApps()">
         <select class="filter-select" id="filter-stage" onchange="renderApps()">
-          <option value="">All stages</option>
-          <option value="applied">Applied</option><option value="referral">Referral sent</option>
-          <option value="acknowledged">Acknowledged</option><option value="hr">HR screen</option>
-          <option value="assignment">Assignment</option><option value="technical">Technical round</option>
-          <option value="final">Final round</option><option value="offer">Offer received</option>
-          <option value="rejected">Rejected</option><option value="ghosted">Ghosted</option>
+          <option value="">all stages</option>
+          <option value="applied">applied</option><option value="referral">referral sent</option>
+          <option value="acknowledged">acknowledged</option><option value="hr">hr screen</option>
+          <option value="assignment">assignment</option><option value="technical">technical</option>
+          <option value="final">final round</option><option value="offer">offer</option>
+          <option value="rejected">rejected</option><option value="ghosted">ghosted</option>
         </select>
         <select class="filter-select" id="filter-channel" onchange="renderApps()">
-          <option value="">All channels</option>
-          <option value="career-page">Career page</option><option value="linkedin-easy">LinkedIn Easy Apply</option>
-          <option value="naukri">Naukri</option><option value="cold-email">Cold email</option>
-          <option value="referral-email">Referral email</option><option value="linkedin-dm">LinkedIn DM</option>
-          <option value="recruiter">Recruiter outreach</option>
+          <option value="">all channels</option>
+          <option value="career-page">career page</option><option value="linkedin-easy">linkedin easy apply</option>
+          <option value="naukri">naukri</option><option value="cold-email">cold email</option>
+          <option value="referral-email">referral email</option><option value="linkedin-dm">linkedin dm</option>
+          <option value="recruiter">recruiter outreach</option>
         </select>
-        <button class="export-btn" onclick="exportCSV()">Export CSV</button>
+        <button class="export-btn" onclick="exportCSV()">export csv</button>
       </div>
       <div class="apps-list" id="apps-list"></div>
     </div>
 
     <div id="tab-admin" class="hidden">
-      <div class="admin-panel">
+      <div class="admin-wrap">
         <div class="admin-header">
-          <div class="admin-header-left">
-            <h2>Access management</h2>
-            <p>Only people on this list can sign in to JobPilot.</p>
-          </div>
-          <div class="slot-badge">
-            <div class="slot-num" id="slot-num">0/10</div>
-            <div class="slot-label">slots used</div>
-          </div>
+          <div><h2>access management</h2><p>Only people on this list can sign in.</p></div>
+          <div class="slot-pill"><div class="slot-num" id="slot-num">0/10</div><div class="slot-label">slots used</div></div>
         </div>
-        <div id="limit-warning" class="limit-warning hidden">All 10 slots are used. Remove someone to add a new person.</div>
-        <div class="add-email-row">
-          <input type="email" class="add-email-input" id="new-email-input" placeholder="friend@gmail.com" onkeydown="if(event.key==='Enter')addAllowedEmail()">
-          <button class="btn-add-email" id="btn-add-email" onclick="addAllowedEmail()">Grant access</button>
+        <div id="limit-warn" class="limit-warn hidden">All 10 slots used. Remove someone to add a new person.</div>
+        <div class="add-row">
+          <input type="email" class="email-input" id="new-email-input" placeholder="friend@gmail.com" onkeydown="if(event.key==='Enter')addAllowedEmail()">
+          <button class="btn-grant" id="btn-grant" onclick="addAllowedEmail()">grant access</button>
         </div>
-        <div class="allowed-list" id="allowed-list"></div>
-        <div class="admin-note">
+        <div class="access-list" id="allowed-list"></div>
+        <div class="admin-footnote">
           Your account (bharadwajbalaji003@gmail.com) always has permanent access and does not use a slot.<br>
           Removing someone locks them out immediately on their next page load.
         </div>
@@ -289,13 +431,14 @@
   </div>
 </div>
 
+<!-- ADD/EDIT MODAL -->
 <div class="modal-backdrop hidden" id="add-modal" onclick="handleBackdropClick(event)">
   <div class="modal">
-    <div class="modal-title"><span id="modal-title-text">New application</span><button class="modal-close" onclick="closeModal()">&#215;</button></div>
+    <div class="modal-head"><span id="modal-title-text">new application</span><button class="modal-x" onclick="closeModal()">&#215;</button></div>
     <div class="form-grid">
-      <div class="form-group"><label class="form-label">Company *</label><input type="text" class="form-input" id="f-company" placeholder="e.g. Zerodha"></div>
-      <div class="form-group"><label class="form-label">Role *</label><input type="text" class="form-input" id="f-role" placeholder="e.g. Quantitative Analyst"></div>
-      <div class="form-group"><label class="form-label">Channel</label>
+      <div class="fg"><label class="form-label">Company *</label><input type="text" class="form-input" id="f-company" placeholder="e.g. Zerodha"></div>
+      <div class="fg"><label class="form-label">Role *</label><input type="text" class="form-input" id="f-role" placeholder="e.g. Quant Analyst"></div>
+      <div class="fg"><label class="form-label">Channel</label>
         <select class="form-input" id="f-channel">
           <option value="career-page">Career page</option><option value="linkedin-easy">LinkedIn Easy Apply</option>
           <option value="naukri">Naukri</option><option value="cold-email">Cold email</option>
@@ -303,7 +446,7 @@
           <option value="recruiter">Recruiter outreach</option>
         </select>
       </div>
-      <div class="form-group"><label class="form-label">Stage</label>
+      <div class="fg"><label class="form-label">Stage</label>
         <select class="form-input" id="f-stage">
           <option value="applied">Applied (waiting)</option><option value="referral">Referral sent</option>
           <option value="acknowledged">Acknowledged</option><option value="hr">HR screen</option>
@@ -312,24 +455,25 @@
           <option value="rejected">Rejected</option><option value="ghosted">Ghosted</option>
         </select>
       </div>
-      <div class="form-group"><label class="form-label">Applied date</label><input type="date" class="form-input" id="f-date"></div>
-      <div class="form-group"><label class="form-label">Resume version</label><input type="text" class="form-input" id="f-resume" placeholder="e.g. Resume_v3_Finance.pdf"></div>
-      <div class="form-group full"><label class="form-label">Contact person</label><input type="text" class="form-input" id="f-contact" placeholder="Name, title, email / LinkedIn URL"></div>
-      <div class="form-group full"><label class="form-label">Application URL / Job link</label><input type="text" class="form-input" id="f-url" placeholder="https://..."></div>
-      <div class="form-group full"><label class="form-label">JD summary / key requirements</label><textarea class="form-textarea" id="f-jd" placeholder="Paste key JD points — role, skills, CTC, location, etc."></textarea></div>
-      <div class="form-group full"><label class="form-label">Notes</label><textarea class="form-textarea" id="f-notes" placeholder="Why this company? Any context about how you found it?"></textarea></div>
+      <div class="fg"><label class="form-label">Applied date</label><input type="date" class="form-input" id="f-date"></div>
+      <div class="fg"><label class="form-label">Resume version</label><input type="text" class="form-input" id="f-resume" placeholder="e.g. Resume_v3_Finance.pdf"></div>
+      <div class="fg full"><label class="form-label">Contact person</label><input type="text" class="form-input" id="f-contact" placeholder="Name, title, email / LinkedIn URL"></div>
+      <div class="fg full"><label class="form-label">Job link / URL</label><input type="text" class="form-input" id="f-url" placeholder="https://..."></div>
+      <div class="fg full"><label class="form-label">JD summary / key requirements</label><textarea class="form-textarea" id="f-jd" placeholder="Paste key points — role, skills, CTC, location, etc."></textarea></div>
+      <div class="fg full"><label class="form-label">Notes</label><textarea class="form-textarea" id="f-notes" placeholder="Why this company? How did you find it?"></textarea></div>
     </div>
     <div class="modal-actions">
-      <button class="btn-danger hidden" id="btn-delete" onclick="deleteApp()">Delete</button>
-      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-save" onclick="saveApp()">Save application</button>
+      <button class="btn-del hidden" id="btn-delete" onclick="deleteApp()">delete</button>
+      <button class="btn-cancel" onclick="closeModal()">cancel</button>
+      <button class="btn-save" onclick="saveApp()">save</button>
     </div>
   </div>
 </div>
 
+<!-- DETAIL MODAL -->
 <div class="modal-backdrop hidden" id="detail-modal" onclick="handleDetailBackdropClick(event)">
   <div class="modal">
-    <div class="modal-title"><span id="detail-company-role"></span><button class="modal-close" onclick="closeDetailModal()">&#215;</button></div>
+    <div class="modal-head"><span id="detail-title"></span><button class="modal-x" onclick="closeDetailModal()">&#215;</button></div>
     <div id="detail-content"></div>
   </div>
 </div>
@@ -338,48 +482,82 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
-const ADMIN_EMAIL = 'bharadwajbalaji003@gmail.com';
-const MAX_SLOTS = 10;
-const firebaseConfig = {
-  apiKey: "AIzaSyAOqxEalC4kt9gIe4VeOhKiqAP-EH_Knfc",
-  authDomain: "jobpilot-tracker.firebaseapp.com",
-  projectId: "jobpilot-tracker",
-  storageBucket: "jobpilot-tracker.firebasestorage.app",
-  messagingSenderId: "604568962880",
-  appId: "1:604568962880:web:32d028bdd6f8a0474f9ca5"
-};
+const ADMIN_EMAIL='bharadwajbalaji003@gmail.com', MAX_SLOTS=10;
+const firebaseConfig={apiKey:"AIzaSyAOqxEalC4kt9gIe4VeOhKiqAP-EH_Knfc",authDomain:"jobpilot-tracker.firebaseapp.com",projectId:"jobpilot-tracker",storageBucket:"jobpilot-tracker.firebasestorage.app",messagingSenderId:"604568962880",appId:"1:604568962880:web:32d028bdd6f8a0474f9ca5"};
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+const auth=firebase.auth(), db=firebase.firestore();
 
-const STAGES = {applied:'Applied (waiting)',referral:'Referral sent',acknowledged:'Acknowledged',hr:'HR screen',assignment:'Assignment given',technical:'Technical round',final:'Final round',offer:'Offer received',rejected:'Rejected',ghosted:'Ghosted'};
-const CHANNELS = {'career-page':'Career page','linkedin-easy':'LinkedIn Easy Apply',naukri:'Naukri','cold-email':'Cold email','referral-email':'Referral email','linkedin-dm':'LinkedIn DM',recruiter:'Recruiter outreach'};
-const ACTIVE_STAGES = ['applied','referral','acknowledged','hr','assignment','technical','final'];
-const STAGE_COLORS = {applied:'#2d5be3',referral:'#5e3fbe',acknowledged:'#0f6e56',hr:'#a05a10',assignment:'#b82060',technical:'#1b5e20',final:'#4527a0',offer:'#1a7a4a',rejected:'#b82020',ghosted:'#9a9a94'};
+const STAGES={applied:'Applied (waiting)',referral:'Referral sent',acknowledged:'Acknowledged',hr:'HR screen',assignment:'Assignment given',technical:'Technical round',final:'Final round',offer:'Offer received',rejected:'Rejected',ghosted:'Ghosted'};
+const CHANNELS={'career-page':'Career page','linkedin-easy':'LinkedIn Easy Apply',naukri:'Naukri','cold-email':'Cold email','referral-email':'Referral email','linkedin-dm':'LinkedIn DM',recruiter:'Recruiter outreach'};
+const ACTIVE=['applied','referral','acknowledged','hr','assignment','technical','final'];
+const PIPE_COLORS={applied:'#6b8ef0',referral:'#8b72d4',acknowledged:'#4aabaa',hr:'#c97b2a',assignment:'#d4609a',technical:'#6aaa6e',final:'#9b83e0',offer:'#4a9e6e',rejected:'#c05050',ghosted:'#636460'};
 
-let currentUser=null, isAdmin=false, apps=[], editingId=null, unsubApps=null, unsubAllowlist=null, allowedEmails=[];
+let currentUser=null,isAdmin=false,apps=[],editingId=null,unsubApps=null,unsubAllowlist=null,allowedEmails=[],username='';
 
-function hide(id){document.getElementById(id).classList.add('hidden');}
-function show(id){document.getElementById(id).classList.remove('hidden');}
-function today(){return new Date().toISOString().split('T')[0];}
-function daysSince(ds){if(!ds)return 0;return Math.floor((new Date()-new Date(ds))/86400000);}
+const hide=id=>document.getElementById(id).classList.add('hidden');
+const show=id=>document.getElementById(id).classList.remove('hidden');
+const today=()=>new Date().toISOString().split('T')[0];
+const daysSince=ds=>ds?Math.floor((new Date()-new Date(ds))/86400000):0;
 
+// ── Theme ─────────────────────────────────────────────────────
+function initTheme(){
+  const saved=localStorage.getItem('jp-theme')||'dark';
+  document.documentElement.setAttribute('data-theme',saved);
+  updateThemeIcon(saved);
+}
+function toggleTheme(){
+  const current=document.documentElement.getAttribute('data-theme');
+  const next=current==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('jp-theme',next);
+  updateThemeIcon(next);
+}
+function updateThemeIcon(theme){
+  document.getElementById('theme-icon-sun').classList.toggle('hidden',theme==='dark');
+  document.getElementById('theme-icon-moon').classList.toggle('hidden',theme==='light');
+}
+initTheme();
+
+// ── Greeting ──────────────────────────────────────────────────
+function renderGreeting(name){
+  const h=new Date().getHours();
+  let moment,sub;
+  if(h>=5&&h<12){moment='good morning';sub='Here\'s your job search at a glance.';}
+  else if(h>=12&&h<17){moment='good afternoon';sub='Stay on top of your pipeline.';}
+  else if(h>=17&&h<21){moment='good evening';sub='Let\'s see where things stand.';}
+  else{moment='night owl';sub='Working late — respect. Here\'s your tracker.';}
+  document.getElementById('greeting-moment').textContent=moment;
+  document.getElementById('greeting-name').textContent=name+'.';
+  document.getElementById('greeting-sub').textContent=sub;
+  document.getElementById('nav-username').textContent=name;
+}
+
+// ── Auth ──────────────────────────────────────────────────────
 auth.onAuthStateChanged(async user=>{
   hide('loading-screen');
   if(!user){showScreen('auth');return;}
-  currentUser=user;
-  isAdmin=user.email===ADMIN_EMAIL;
-  if(isAdmin){bootApp();return;}
+  currentUser=user;isAdmin=user.email===ADMIN_EMAIL;
+  if(isAdmin){await checkUsername();return;}
   try{
     const doc=await db.collection('allowlist').doc(user.email.replace(/\./g,'_')).get();
-    if(doc.exists){bootApp();}else{showScreen('denied');}
+    if(doc.exists)await checkUsername();else showScreen('denied');
   }catch(e){showScreen('denied');}
 });
 
-function showScreen(n){
-  ['loading-screen','auth-screen','denied-screen','app-screen'].forEach(id=>hide(id));
-  const map={loading:'loading-screen',auth:'auth-screen',denied:'denied-screen',app:'app-screen'};
-  if(map[n])show(map[n]);
+async function checkUsername(){
+  try{
+    const doc=await db.collection('users').doc(currentUser.uid).collection('profile').doc('info').get();
+    if(doc.exists&&doc.data().username){username=doc.data().username;bootApp();}
+    else showScreen('setup');
+  }catch(e){showScreen('setup');}
+}
+
+async function saveUsername(){
+  const val=document.getElementById('username-input').value.trim();
+  if(!val){alert('Please enter your name.');return;}
+  username=val;
+  await db.collection('users').doc(currentUser.uid).collection('profile').doc('info').set({username:val});
+  bootApp();
 }
 
 function bootApp(){
@@ -388,144 +566,131 @@ function bootApp(){
   if(currentUser.photoURL)av.innerHTML=`<img src="${currentUser.photoURL}" alt="">`;
   else av.textContent=currentUser.displayName?currentUser.displayName[0].toUpperCase():'U';
   if(isAdmin){show('admin-nav-tab');subscribeAllowlist();}
+  renderGreeting(username);
   subscribeToApps();
+}
+
+function showScreen(n){
+  ['loading-screen','auth-screen','denied-screen','setup-screen','app-screen'].forEach(id=>hide(id));
+  const map={loading:'loading-screen',auth:'auth-screen',denied:'denied-screen',setup:'setup-screen',app:'app-screen'};
+  if(map[n])show(map[n]);
 }
 
 function signInWithGoogle(){const p=new firebase.auth.GoogleAuthProvider();auth.signInWithPopup(p).catch(e=>alert('Sign-in failed: '+e.message));}
 function signOut(){if(unsubApps){unsubApps();unsubApps=null;}if(unsubAllowlist){unsubAllowlist();unsubAllowlist=null;}auth.signOut();}
 
-function subscribeAllowlist(){
-  unsubAllowlist=db.collection('allowlist').onSnapshot(snap=>{
-    allowedEmails=snap.docs.map(d=>({id:d.id,...d.data()}));
-    renderAllowlist();
-  });
-}
-
+// ── Allowlist ─────────────────────────────────────────────────
+function subscribeAllowlist(){unsubAllowlist=db.collection('allowlist').onSnapshot(snap=>{allowedEmails=snap.docs.map(d=>({id:d.id,...d.data()}));renderAllowlist();});}
 async function addAllowedEmail(){
-  const input=document.getElementById('new-email-input');
-  const email=input.value.trim().toLowerCase();
-  if(!email||!email.includes('@')){alert('Enter a valid email address.');return;}
-  if(email===ADMIN_EMAIL){alert("That's your own admin account — it always has access.");return;}
-  if(allowedEmails.length>=MAX_SLOTS){alert('All 10 slots are used. Remove someone first.');return;}
-  if(allowedEmails.find(e=>e.email===email)){alert('This email already has access.');return;}
-  const key=email.replace(/\./g,'_');
-  await db.collection('allowlist').doc(key).set({email,addedAt:today(),addedBy:ADMIN_EMAIL});
+  const input=document.getElementById('new-email-input'),email=input.value.trim().toLowerCase();
+  if(!email||!email.includes('@')){alert('Enter a valid email.');return;}
+  if(email===ADMIN_EMAIL){alert("That's your own admin account.");return;}
+  if(allowedEmails.length>=MAX_SLOTS){alert('All 10 slots used.');return;}
+  if(allowedEmails.find(e=>e.email===email)){alert('Already has access.');return;}
+  await db.collection('allowlist').doc(email.replace(/\./g,'_')).set({email,addedAt:today(),addedBy:ADMIN_EMAIL});
   input.value='';
 }
-
-async function removeAllowedEmail(docId){
-  if(!confirm('Remove this person\'s access? They will be locked out immediately.'))return;
-  await db.collection('allowlist').doc(docId).delete();
-}
-
+async function removeAllowedEmail(id){if(!confirm('Remove this person\'s access?'))return;await db.collection('allowlist').doc(id).delete();}
 function renderAllowlist(){
-  const count=allowedEmails.length;
-  document.getElementById('slot-num').textContent=`${count}/${MAX_SLOTS}`;
-  const atLimit=count>=MAX_SLOTS;
-  document.getElementById('limit-warning').classList.toggle('hidden',!atLimit);
-  document.getElementById('btn-add-email').disabled=atLimit;
+  const c=allowedEmails.length;
+  document.getElementById('slot-num').textContent=`${c}/${MAX_SLOTS}`;
+  const atLim=c>=MAX_SLOTS;
+  document.getElementById('limit-warn').classList.toggle('hidden',!atLim);
+  document.getElementById('btn-grant').disabled=atLim;
   const list=document.getElementById('allowed-list');
-  if(!allowedEmails.length){list.innerHTML='<div style="font-size:13px;color:var(--text3);padding:1rem 0;">No one has been granted access yet.</div>';return;}
+  if(!c){list.innerHTML='<div style="font-size:13px;color:var(--text3);padding:1rem 0;">No one has been granted access yet.</div>';return;}
   list.innerHTML=allowedEmails.map(e=>`
-    <div class="allowed-item">
-      <div><div class="allowed-email">${e.email}</div><div class="allowed-added">Added ${e.addedAt||'–'}</div></div>
-      <button class="btn-remove" onclick="removeAllowedEmail('${e.id}')">Remove</button>
+    <div class="access-item">
+      <div><div class="access-email">${e.email}</div><div class="access-date">added ${e.addedAt||'–'}</div></div>
+      <button class="btn-revoke" onclick="removeAllowedEmail('${e.id}')">revoke</button>
     </div>`).join('');
 }
 
+// ── Firestore ─────────────────────────────────────────────────
 function userCol(){return db.collection('users').doc(currentUser.uid).collection('applications');}
-
 function subscribeToApps(){
   if(unsubApps)unsubApps();
-  unsubApps=userCol().orderBy('date','desc').onSnapshot(snap=>{
-    apps=snap.docs.map(d=>({id:d.id,...d.data()}));
-    render();
-  },err=>console.error(err));
+  unsubApps=userCol().orderBy('date','desc').onSnapshot(snap=>{apps=snap.docs.map(d=>({id:d.id,...d.data()}));render();},err=>console.error(err));
 }
+async function updateField(id,f){await userCol().doc(id).update(f);}
 
-async function updateAppField(id,fields){await userCol().doc(id).update(fields);}
-
+// ── Render ────────────────────────────────────────────────────
 function render(){renderDashboard();renderApps();}
 
 function renderDashboard(){
-  const total=apps.length,active=apps.filter(a=>ACTIVE_STAGES.includes(a.stage)).length,
+  const total=apps.length,active=apps.filter(a=>ACTIVE.includes(a.stage)).length,
     offers=apps.filter(a=>a.stage==='offer').length,ghosted=apps.filter(a=>a.stage==='ghosted').length,
     waiting=apps.filter(a=>a.stage==='applied').length,
     rr=total?Math.round(((total-ghosted-waiting)/total)*100):0;
   document.getElementById('stats-grid').innerHTML=`
-    <div class="stat-card"><div class="stat-label">Total applied</div><div class="stat-val">${total}</div></div>
-    <div class="stat-card"><div class="stat-label">Active</div><div class="stat-val blue">${active}</div></div>
-    <div class="stat-card"><div class="stat-label">Offers</div><div class="stat-val green">${offers}</div></div>
-    <div class="stat-card"><div class="stat-label">Response rate</div><div class="stat-val warn">${rr}%</div></div>
-    <div class="stat-card"><div class="stat-label">Ghosted</div><div class="stat-val red">${ghosted}</div></div>`;
+    <div class="stat-card"><div class="stat-label">applied</div><div class="stat-val">${total}</div></div>
+    <div class="stat-card"><div class="stat-label">active</div><div class="stat-val accent">${active}</div></div>
+    <div class="stat-card"><div class="stat-label">offers</div><div class="stat-val green">${offers}</div></div>
+    <div class="stat-card"><div class="stat-label">response</div><div class="stat-val warn">${rr}%</div></div>
+    <div class="stat-card"><div class="stat-label">ghosted</div><div class="stat-val red">${ghosted}</div></div>`;
   const sc={};Object.keys(STAGES).forEach(s=>sc[s]=0);apps.forEach(a=>{if(sc[a.stage]!==undefined)sc[a.stage]++;});
   const mx=Math.max(1,...Object.values(sc));
   document.getElementById('pipeline-bars').innerHTML=Object.entries(STAGES).map(([k,v])=>`
     <div class="pipeline-row"><span class="pipeline-row-label">${v}</span>
-    <div class="pipeline-bar-bg"><div class="pipeline-bar-fill" style="width:${(sc[k]/mx)*100}%;background:${STAGE_COLORS[k]};"></div></div>
+    <div class="pipeline-bar-bg"><div class="pipeline-bar-fill" style="width:${(sc[k]/mx)*100}%;background:${PIPE_COLORS[k]};"></div></div>
     <span class="pipeline-count">${sc[k]}</span></div>`).join('');
-  const fu=apps.filter(a=>ACTIVE_STAGES.includes(a.stage)&&daysSince(a.date)>=7);
+  const fu=apps.filter(a=>ACTIVE.includes(a.stage)&&daysSince(a.date)>=7);
   const fuSec=document.getElementById('followup-section');
   if(fu.length){fuSec.classList.remove('hidden');
     document.getElementById('followup-list').innerHTML=fu.sort((a,b)=>daysSince(b.date)-daysSince(a.date)).map(a=>`
       <div class="followup-item" onclick="openDetail('${a.id}')">
         <div><div class="followup-company">${a.company}</div><div class="followup-role">${a.role} · ${CHANNELS[a.channel]||a.channel}</div></div>
-        <div class="followup-days">${daysSince(a.date)}d ago</div></div>`).join('');
+        <div class="followup-days">${daysSince(a.date)}d</div></div>`).join('');
   }else fuSec.classList.add('hidden');
 }
 
 function renderApps(){
   const q=(document.getElementById('search-input').value||'').toLowerCase();
   const sf=document.getElementById('filter-stage').value,cf=document.getElementById('filter-channel').value;
-  const filtered=apps.filter(a=>{
-    const mq=!q||a.company.toLowerCase().includes(q)||a.role.toLowerCase().includes(q);
-    return mq&&(!sf||a.stage===sf)&&(!cf||a.channel===cf);
-  });
+  const f=apps.filter(a=>{const mq=!q||a.company.toLowerCase().includes(q)||a.role.toLowerCase().includes(q);return mq&&(!sf||a.stage===sf)&&(!cf||a.channel===cf);});
   const c=document.getElementById('apps-list');
-  if(!filtered.length){c.innerHTML='<div class="empty-state"><h3>No applications found</h3><p>Try adjusting filters or add a new application.</p></div>';return;}
-  c.innerHTML=filtered.map(a=>{
-    const ov=ACTIVE_STAGES.includes(a.stage)&&daysSince(a.date)>=7;
+  if(!f.length){c.innerHTML='<div class="empty"><h3 style="font-size:14px;color:var(--text2);">no applications found</h3><p>try adjusting filters or add a new application.</p></div>';return;}
+  c.innerHTML=f.map(a=>{
+    const ov=ACTIVE.includes(a.stage)&&daysSince(a.date)>=7;
     return `<div class="app-card" onclick="openDetail('${a.id}')">
-      <div class="app-card-header"><div class="app-card-left">
-        <div style="display:flex;align-items:center;gap:8px;"><div class="status-dot dot-${a.stage}"></div><div class="app-company">${a.company}</div></div>
+      <div class="app-card-inner"><div class="app-card-left">
+        <div class="app-company-row"><div class="status-pip pip-${a.stage}"></div><div class="app-company">${a.company}</div></div>
         <div class="app-role">${a.role}</div>
-        <div class="app-meta"><span class="tag s-${a.stage}">${STAGES[a.stage]||a.stage}</span>
+        <div class="app-tags"><span class="tag s-${a.stage}">${STAGES[a.stage]||a.stage}</span>
           <span class="tag tag-channel">${CHANNELS[a.channel]||a.channel}</span>
           <span class="tag tag-date">${a.date||'–'}</span>
-          ${ov?`<span class="tag tag-overdue">Follow up · ${daysSince(a.date)}d</span>`:''}
+          ${ov?`<span class="tag tag-overdue">${daysSince(a.date)}d — follow up</span>`:''}
         </div></div>
         <div class="app-card-right">
-          ${a.contact?`<div style="font-size:11px;color:var(--text3);text-align:right;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.contact.split(',')[0]}</div>`:''}
-          ${a.resume?`<div style="font-size:10px;color:var(--text3);font-family:var(--fm);">${a.resume}</div>`:''}
+          ${a.contact?`<div class="card-meta-text">${a.contact.split(',')[0]}</div>`:''}
+          ${a.resume?`<div class="card-resume-text">${a.resume}</div>`:''}
         </div>
       </div></div>`;
   }).join('');
 }
 
+// ── Tab ───────────────────────────────────────────────────────
 function switchTab(tab){
   ['dashboard','applications','admin'].forEach(t=>document.getElementById('tab-'+t).classList.toggle('hidden',t!==tab));
   document.querySelectorAll('.nav-tab').forEach(el=>{
-    const isActive=(el.textContent.trim().toLowerCase()===tab)||(tab==='admin'&&el.id==='admin-nav-tab');
-    el.classList.toggle('active',isActive);
+    const isA=(el.textContent.trim()===tab)||(tab==='admin'&&el.id==='admin-nav-tab');
+    el.classList.toggle('active',isA);
   });
   document.getElementById('add-btn').classList.toggle('hidden',tab==='admin');
 }
 
+// ── Add/Edit ──────────────────────────────────────────────────
 function openAddModal(){
   editingId=null;
-  document.getElementById('modal-title-text').textContent='New application';
+  document.getElementById('modal-title-text').textContent='new application';
   document.getElementById('btn-delete').classList.add('hidden');
   ['company','role','resume','contact','url','jd','notes'].forEach(f=>document.getElementById('f-'+f).value='');
-  document.getElementById('f-channel').value='career-page';
-  document.getElementById('f-stage').value='applied';
-  document.getElementById('f-date').value=today();
-  show('add-modal');
+  document.getElementById('f-channel').value='career-page';document.getElementById('f-stage').value='applied';
+  document.getElementById('f-date').value=today();show('add-modal');
 }
-
 function openEditModal(id){
-  const a=apps.find(x=>x.id===id);if(!a)return;
-  editingId=id;
-  document.getElementById('modal-title-text').textContent='Edit application';
+  const a=apps.find(x=>x.id===id);if(!a)return;editingId=id;
+  document.getElementById('modal-title-text').textContent='edit application';
   document.getElementById('btn-delete').classList.remove('hidden');
   document.getElementById('f-company').value=a.company||'';document.getElementById('f-role').value=a.role||'';
   document.getElementById('f-channel').value=a.channel||'career-page';document.getElementById('f-stage').value=a.stage||'applied';
@@ -534,7 +699,6 @@ function openEditModal(id){
   document.getElementById('f-jd').value=a.jd||'';document.getElementById('f-notes').value=a.notes||'';
   closeDetailModal();show('add-modal');
 }
-
 function closeModal(){hide('add-modal');}
 function handleBackdropClick(e){if(e.target.id==='add-modal')closeModal();}
 
@@ -542,58 +706,42 @@ async function saveApp(){
   const company=document.getElementById('f-company').value.trim(),role=document.getElementById('f-role').value.trim();
   if(!company||!role){alert('Company and role are required.');return;}
   const stage=document.getElementById('f-stage').value,date=document.getElementById('f-date').value;
-  const data={company,role,stage,date,channel:document.getElementById('f-channel').value,
-    resume:document.getElementById('f-resume').value.trim(),contact:document.getElementById('f-contact').value.trim(),
-    url:document.getElementById('f-url').value.trim(),jd:document.getElementById('f-jd').value.trim(),
-    notes:document.getElementById('f-notes').value.trim()};
-  if(editingId){
-    const a=apps.find(x=>x.id===editingId);
-    if(a&&a.stage!==stage)data.timeline=[...(a.timeline||[]),{stage,date:today()}];
-    data.updatedAt=today();
-    await userCol().doc(editingId).update(data);
-  }else{
-    data.timeline=[{stage,date}];data.callNotes=[];data.createdAt=today();
-    await userCol().add(data);
-  }
+  const data={company,role,stage,date,channel:document.getElementById('f-channel').value,resume:document.getElementById('f-resume').value.trim(),contact:document.getElementById('f-contact').value.trim(),url:document.getElementById('f-url').value.trim(),jd:document.getElementById('f-jd').value.trim(),notes:document.getElementById('f-notes').value.trim()};
+  if(editingId){const a=apps.find(x=>x.id===editingId);if(a&&a.stage!==stage)data.timeline=[...(a.timeline||[]),{stage,date:today()}];data.updatedAt=today();await userCol().doc(editingId).update(data);}
+  else{data.timeline=[{stage,date}];data.callNotes=[];data.createdAt=today();await userCol().add(data);}
   closeModal();
 }
+async function deleteApp(){if(!editingId||!confirm('Delete this application?'))return;await userCol().doc(editingId).delete();closeModal();}
 
-async function deleteApp(){
-  if(!editingId||!confirm('Delete this application? This cannot be undone.'))return;
-  await userCol().doc(editingId).delete();closeModal();
-}
-
+// ── Detail ────────────────────────────────────────────────────
 function openDetail(id){
   const a=apps.find(x=>x.id===id);if(!a)return;
-  document.getElementById('detail-company-role').innerHTML=`<span>${a.company}</span> <span style="color:var(--text3);font-weight:400;font-size:14px;">· ${a.role}</span>`;
+  document.getElementById('detail-title').innerHTML=`<span style="font-weight:600;">${a.company}</span> <span style="color:var(--text3);font-weight:400;font-size:13px;">· ${a.role}</span>`;
   document.getElementById('detail-content').innerHTML=`
-    <div class="quick-glance">
-      <div class="qg-label">Quick glance — for when they call</div>
+    <div class="qg">
+      <div class="qg-eyebrow">quick glance</div>
       <div class="qg-company">${a.company}</div><div class="qg-role">${a.role}</div>
-      <div class="qg-meta">
-        <div class="qg-item"><div class="qg-item-label">Stage</div><div class="qg-item-val">${STAGES[a.stage]||a.stage}</div></div>
-        <div class="qg-item"><div class="qg-item-label">Channel</div><div class="qg-item-val">${CHANNELS[a.channel]||a.channel}</div></div>
-        <div class="qg-item"><div class="qg-item-label">Applied</div><div class="qg-item-val">${a.date||'–'}</div></div>
-        <div class="qg-item"><div class="qg-item-label">Resume</div><div class="qg-item-val">${a.resume||'–'}</div></div>
-        <div class="qg-item"><div class="qg-item-label">Contact</div><div class="qg-item-val" style="max-width:180px;">${a.contact||'–'}</div></div>
+      <div class="qg-grid">
+        <div><div class="qg-item-label">stage</div><div class="qg-item-val">${STAGES[a.stage]||a.stage}</div></div>
+        <div><div class="qg-item-label">channel</div><div class="qg-item-val">${CHANNELS[a.channel]||a.channel}</div></div>
+        <div><div class="qg-item-label">applied</div><div class="qg-item-val">${a.date||'–'}</div></div>
+        <div><div class="qg-item-label">resume</div><div class="qg-item-val">${a.resume||'–'}</div></div>
+        <div><div class="qg-item-label">contact</div><div class="qg-item-val">${a.contact||'–'}</div></div>
       </div>
     </div>
-    ${a.jd?`<div class="detail-section"><div class="section-title">JD summary</div><div style="font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap;">${a.jd}</div></div>`:''}
-    ${a.url?`<div class="detail-section"><div class="section-title">Job link</div><a href="${a.url}" style="font-size:13px;color:var(--accent);" target="_blank">${a.url}</a></div>`:''}
-    <div class="detail-section"><div class="section-title">Stage timeline</div>
-      <div class="timeline">${(a.timeline||[]).map(t=>`<div class="tl-item"><div class="tl-dot"></div><div class="tl-content"><div class="tl-stage">${STAGES[t.stage]||t.stage}</div><div class="tl-date">${t.date}</div></div></div>`).join('')}</div>
+    ${a.jd?`<div class="det-section"><div class="det-label">jd summary</div><div style="font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap;">${a.jd}</div></div>`:''}
+    ${a.url?`<div class="det-section"><div class="det-label">job link</div><a href="${a.url}" style="font-size:13px;color:var(--accent);" target="_blank">${a.url}</a></div>`:''}
+    <div class="det-section"><div class="det-label">timeline</div>
+      <div class="tl">${(a.timeline||[]).map(t=>`<div class="tl-item"><div class="tl-dot"></div><div><div class="tl-stage">${STAGES[t.stage]||t.stage}</div><div class="tl-date">${t.date}</div></div></div>`).join('')}</div>
     </div>
-    <div class="detail-section"><div class="section-title">Call & interview notes</div>
-      <div id="notes-list">${(a.callNotes||[]).length?(a.callNotes).map(n=>`<div class="note-entry"><div class="note-entry-date">${n.date}</div><div class="note-entry-text">${n.text}</div></div>`).join(''):'<div style="font-size:13px;color:var(--text3);">No notes yet.</div>'}</div>
-      <div class="add-note-area">
-        <input type="text" class="add-note-input" id="new-note-input" placeholder="Add a note from a call or email...">
-        <button class="add-note-btn" onclick="addNote('${a.id}')">Add note</button>
-      </div>
+    <div class="det-section"><div class="det-label">call & interview notes</div>
+      <div id="notes-list">${(a.callNotes||[]).length?(a.callNotes).map(n=>`<div class="note-entry"><div class="note-date">${n.date}</div><div class="note-text">${n.text}</div></div>`).join(''):'<div style="font-size:13px;color:var(--text3);">no notes yet.</div>'}</div>
+      <div class="note-add-row"><input type="text" class="note-input" id="new-note-input" placeholder="add a note from a call or email..."><button class="note-add-btn" onclick="addNote('${a.id}')">add</button></div>
     </div>
-    ${a.notes?`<div class="detail-section"><div class="section-title">General notes</div><div style="font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap;">${a.notes}</div></div>`:''}
+    ${a.notes?`<div class="det-section"><div class="det-label">general notes</div><div style="font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap;">${a.notes}</div></div>`:''}
     <div style="display:flex;gap:8px;margin-top:0.5rem;flex-wrap:wrap;">
-      <button class="btn-save" onclick="openEditModal('${a.id}')">Edit application</button>
-      <select class="filter-select" style="flex:1;min-width:160px;" onchange="quickStageUpdate('${a.id}',this.value)">
+      <button class="btn-save" onclick="openEditModal('${a.id}')">edit</button>
+      <select class="filter-select" style="flex:1;min-width:150px;" onchange="quickStage('${a.id}',this.value)">
         ${Object.entries(STAGES).map(([k,v])=>`<option value="${k}" ${a.stage===k?'selected':''}>${v}</option>`).join('')}
       </select>
     </div>`;
@@ -603,24 +751,17 @@ function openDetail(id){
 async function addNote(id){
   const input=document.getElementById('new-note-input'),text=input.value.trim();
   if(!text)return;const a=apps.find(x=>x.id===id);if(!a)return;
-  await updateAppField(id,{callNotes:[...(a.callNotes||[]),{date:today(),text}]});
-  input.value='';
+  await updateField(id,{callNotes:[...(a.callNotes||[]),{date:today(),text}]});input.value='';
 }
-
-async function quickStageUpdate(id,stage){
-  const a=apps.find(x=>x.id===id);if(!a)return;
-  await updateAppField(id,{stage,timeline:[...(a.timeline||[]),{stage,date:today()}]});
-}
-
+async function quickStage(id,stage){const a=apps.find(x=>x.id===id);if(!a)return;await updateField(id,{stage,timeline:[...(a.timeline||[]),{stage,date:today()}]});}
 function closeDetailModal(){hide('detail-modal');}
 function handleDetailBackdropClick(e){if(e.target.id==='detail-modal')closeDetailModal();}
 
+// ── Export ────────────────────────────────────────────────────
 function exportCSV(){
-  const headers=['Company','Role','Channel','Stage','Applied date','Resume version','Contact','URL','JD summary','Notes'];
+  const h=['Company','Role','Channel','Stage','Applied date','Resume','Contact','URL','JD','Notes'];
   const rows=apps.map(a=>[a.company,a.role,CHANNELS[a.channel]||a.channel,STAGES[a.stage]||a.stage,a.date,a.resume,a.contact,a.url,a.jd,a.notes].map(v=>`"${(v||'').replace(/"/g,'""')}"`));
-  const csv=[headers,...rows].map(r=>r.join(',')).join('\n');
-  const el=document.createElement('a');el.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  el.download='jobpilot-export.csv';el.click();
+  const el=document.createElement('a');el.href=URL.createObjectURL(new Blob([[h,...rows].map(r=>r.join(',')).join('\n')],{type:'text/csv'}));el.download='jobpilot-export.csv';el.click();
 }
 </script>
 </body>
